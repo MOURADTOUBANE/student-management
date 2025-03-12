@@ -33,6 +33,8 @@ public class AfficheModules extends JFrame {
         tableModel.addColumn("Formateurs");
         tableScroller.setBounds(50,50,600,300);
         this.add(tableScroller);
+
+        //CSV FILE
         readCSVFileModules("src/file/Modules.csv");
 
         //BUTTON CONFIRM

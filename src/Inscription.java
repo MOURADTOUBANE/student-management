@@ -3,24 +3,23 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Inscription extends JFrame {
     JPanel panelInscription;
-    JLabel lblName,lblSecandeName,lblCNI,lblNationality,lblLanguage,lblGender,lblAge,lblGrade,lblAddress;
+    JLabel lblName,lblSecondName,lblCNI,lblNationality,lblLanguage,lblGender,lblAge,lblGrade,lblAddress;
     JTextField txtName;
-    JTextField txtSecandeName;
+    JTextField txtSecondName;
     JTextField txtCNI;
     JTextField txtAddress;
     JTextField txtGrade;
     JComboBox comboBoxNationality;
     JCheckBox arabic,french,english;
     ButtonGroup buttonGroup;
-    JRadioButton homme,femme;
+    JRadioButton male,female;
     SpinnerNumberModel spinnerModel;
     JSpinner spinnerAge;
     JButton buttonAdd,buttonClear,buttonDeleteSelected,buttonDeleteAll,buttonNext;
@@ -55,13 +54,13 @@ public class Inscription extends JFrame {
         txtName.setBounds(140,20,100,20);
 
 
-        //SECANDENAME
-        lblSecandeName=new JLabel("SecandeName:");
-        txtSecandeName=new JTextField();
-        panelInscription.add(lblSecandeName);
-        panelInscription.add(txtSecandeName);
-        lblSecandeName.setBounds(20,50,100,20);
-        txtSecandeName.setBounds(140,50,100,20);
+        //SecondName
+        lblSecondName=new JLabel("SecondName:");
+        txtSecondName=new JTextField();
+        panelInscription.add(lblSecondName);
+        panelInscription.add(txtSecondName);
+        lblSecondName.setBounds(20,50,100,20);
+        txtSecondName.setBounds(140,50,100,20);
 
         //CNI
         lblCNI=new JLabel("CNI:");
@@ -104,17 +103,17 @@ public class Inscription extends JFrame {
 
         //Gender
         lblGender=new JLabel("Gender:");
-        homme=new JRadioButton("Homme");
-        femme=new JRadioButton("Femme");
+        male=new JRadioButton("male");
+        female=new JRadioButton("female");
         buttonGroup=new ButtonGroup();
-        buttonGroup.add(homme);
-        buttonGroup.add(femme);
+        buttonGroup.add(male);
+        buttonGroup.add(female);
         panelInscription.add(lblGender);
-        panelInscription.add(homme);
-        panelInscription.add(femme);
+        panelInscription.add(male);
+        panelInscription.add(female);
         lblGender.setBounds(20,220,90,20);
-        homme.setBounds(140,220,100,20);
-        femme.setBounds(250,220,100,20);
+        male.setBounds(140,220,100,20);
+        female.setBounds(250,220,100,20);
 
         //AGE
         lblAge=new JLabel("Age:");
@@ -180,34 +179,46 @@ public class Inscription extends JFrame {
         buttonAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Matcher matcher_1=pattern1.matcher(txtName.getText());
-                Matcher matcher_2=pattern1.matcher(txtSecandeName.getText());
-                Matcher matcher_3=pattern2.matcher(txtCNI.getText());
-                String name=null;
-                String secandeName=null;
-                String CNI=null;
-                if (matcher_1.matches()){
-                    if (matcher_2.matches()){
-                        if (matcher_3.matches()){
-                            CNI=txtCNI.getText();
-                        }else {
-                            showMsg("Invalid CNI");
-                        }
-                        secandeName=txtSecandeName.getText();
-                    }else {
-                        showMsg("Invalid Secand_Name");}
-                    name=txtName.getText();
-                }else showMsg("invalid name");
-                String gender=homme.isSelected()?"homme":"femme";
-                tableModel.addRow(new Object[]{gender,name ,secandeName,CNI});
+                Matcher matcher_1 = pattern1.matcher(txtName.getText());
+                Matcher matcher_2 = pattern1.matcher(txtSecondName.getText());
+                Matcher matcher_3 = pattern2.matcher(txtCNI.getText());
+
+                if (!matcher_1.matches()) {
+                    showMsg("Invalid Name");
+                    return;
+                }
+                if (!matcher_2.matches()) {
+                    showMsg("Invalid Second Name");
+                    return;
+                }
+                if (!matcher_3.matches()) {
+                    showMsg("Invalid CNI");
+                    return;
+                }
+
+                String name = txtName.getText();
+                String secondName = txtSecondName.getText();
+                String CNI = txtCNI.getText();
+                String gender = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "");
+
+                if (gender.isEmpty()) {
+                    showMsg("Please select a gender");
+                    return;
+                }
+
+                 tableModel.addRow(new Object[]{gender, name, secondName, CNI});
+
+                    writeToCSVFileStudent(gender ,name, secondName, CNI);
+                    showMsg("Student added successfully!");
 
             }
         });
+        
         buttonClear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txtName.setText("");
-                txtSecandeName.setText("");
+                txtSecondName.setText("");
                 txtCNI.setText("");
                 txtAddress.setText("");
                 txtGrade.setText("");
@@ -241,11 +252,11 @@ public class Inscription extends JFrame {
              public void actionPerformed(ActionEvent e) {
                  ShowInformation showInformation=new ShowInformation();
                  showInformation.afficheName.setText(txtName.getText());
-                 showInformation.afficheSecandeName.setText(txtSecandeName.getText());
+                 showInformation.afficheSecondName.setText(txtSecondName.getText());
                  showInformation.afficheCNI.setText(txtCNI.getText());
                  showInformation.afficheNationality.setText((String) comboBoxNationality.getSelectedItem());
                  showInformation.afficheAdress.setText(txtAddress.getText());
-                 showInformation.afficheGender.setText(homme.isSelected()?"Homme":"Femme");
+                 showInformation.afficheGender.setText(male.isSelected()?"Male":"Female");
                  int selectedValue=(int)spinnerAge.getValue();
                  showInformation.afficheAge.setText(String.valueOf(selectedValue));
                  showInformation.afficheGrade.setText(txtGrade.getText());
@@ -295,6 +306,17 @@ public class Inscription extends JFrame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+    private void writeToCSVFileStudent(String gender,String name,String secondName,String cni) {
+        String file="src/file/Student.csv";
+        try(FileWriter out=new FileWriter(file,true)) {
+            out.append(gender).append(",")
+                    .append(name).append(",")
+                    .append(secondName).append(",")
+                    .append(cni).append("\n");
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 }

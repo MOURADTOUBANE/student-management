@@ -3,8 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ShowInformation extends JFrame{
-    JLabel lblName,lblSecandeName,lblCNI,lblNationality,lblLanguage,lblGender,lblAge,lblGrade,lblAddress;
-    JLabel afficheName,afficheSecandeName,afficheCNI,afficheNationality,afficheLanguage,afficheGender,afficheGrade,afficheAdress,afficheAge;
+    JLabel lblName,lblSecondName,lblCNI,lblNationality,lblLanguage,lblGender,lblAge,lblGrade,lblAddress;
+    JLabel afficheName,afficheSecondName,afficheCNI,afficheNationality,afficheLanguage,afficheGender,afficheGrade,afficheAdress,afficheAge;
     JButton buttonConfirm,buttonCancel;
     public ShowInformation (){
         ShowInfoFormule();
@@ -25,13 +25,13 @@ public class ShowInformation extends JFrame{
         lblName.setBounds(20,20,60,20);
         afficheName.setBounds(140,20,100,20);
 
-        //SECANDENAME
-        lblSecandeName=new JLabel("SecandeName:");
-        afficheSecandeName=new JLabel();
-        this.add(lblSecandeName);
-        this.add(afficheSecandeName);
-        lblSecandeName.setBounds(20,50,100,20);
-        afficheSecandeName.setBounds(140,50,100,20);
+        //SecondName
+        lblSecondName=new JLabel("SecondName:");
+        afficheSecondName=new JLabel();
+        this.add(lblSecondName);
+        this.add(afficheSecondName);
+        lblSecondName.setBounds(20,50,100,20);
+        afficheSecondName.setBounds(140,50,100,20);
 
         //CNI
         lblCNI=new JLabel("CNI:");

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class EditModulesFormateures extends JFrame {
@@ -86,6 +87,9 @@ public class EditModulesFormateures extends JFrame {
                 String module=txtModule.getText();
                 String formateur=txtFormateur.getText();
                 tableModel.addRow(new Object[]{module,formateur});
+
+                writeToCSVFileModules(module,formateur);
+                showMsg("Module added successfully!");
             }
         });
         buttonClear.addActionListener(new ActionListener() {
@@ -135,4 +139,17 @@ public class EditModulesFormateures extends JFrame {
             }
         }
     }
+    private void writeToCSVFileModules(String moduleName,String formateur){
+        String file="src/file/Modules.csv";
+        try (FileWriter out=new FileWriter(file,true)){
+            out.append(moduleName).append(",")
+                    .append(formateur).append("\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void showMsg(String msg){
+        JOptionPane.showMessageDialog(this,msg);
+    }
+
 }

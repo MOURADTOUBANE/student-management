@@ -117,7 +117,7 @@ public class Inscription extends JFrame {
 
         //AGE
         lblAge=new JLabel("Age:");
-        spinnerModel=new SpinnerNumberModel(6,6,21,1);
+        spinnerModel=new SpinnerNumberModel(6,6,23,1);
         spinnerAge=new JSpinner(spinnerModel);
         panelInscription.add(lblAge);
         panelInscription.add(spinnerAge);
@@ -238,28 +238,46 @@ public class Inscription extends JFrame {
                  for( int i=selectedIndices.length-1; i>=0; i-- )
                  {
                      tableModel.removeRow( selectedIndices[i] );
+                     removeRowCSV();
+                     showMsg("Student Deleted Successful!");
                  }
                  }
+
          });
          buttonDeleteAll.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent e) {
                  tableModel.setRowCount(0);
+                 removeRowCSV();
+                 showMsg("All Students Removed!");
              }
          });
          buttonNext.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent e) {
                  ShowInformation showInformation=new ShowInformation();
-                 showInformation.afficheName.setText(txtName.getText());
-                 showInformation.afficheSecondName.setText(txtSecondName.getText());
-                 showInformation.afficheCNI.setText(txtCNI.getText());
-                 showInformation.afficheNationality.setText((String) comboBoxNationality.getSelectedItem());
-                 showInformation.afficheAdress.setText(txtAddress.getText());
-                 showInformation.afficheGender.setText(male.isSelected()?"Male":"Female");
+
+                 String name=txtName.getText();
+                 String secondName=txtSecondName.getText();
+                 String CNI=txtCNI.getText();
+                 String nationality=(String) comboBoxNationality.getSelectedItem();
+                 String adress=txtAddress.getText();
+                 String gender=male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "");
+                 String grade=txtGrade.getText();
                  int selectedValue=(int)spinnerAge.getValue();
+
+                 if (name.isEmpty() && secondName.isEmpty() && CNI.isEmpty() && adress.isEmpty() && gender.isEmpty() && grade.isEmpty()){
+                     showInformation.setVisible(false);
+                     showMsg("Please Enter All Information");
+                 }else {
+                 showInformation.afficheName.setText(name);
+                 showInformation.afficheSecondName.setText(secondName);
+                 showInformation.afficheCNI.setText(CNI);
+                 showInformation.afficheNationality.setText(nationality);
+                 showInformation.afficheAdress.setText(adress);
+                 showInformation.afficheGender.setText(gender);
                  showInformation.afficheAge.setText(String.valueOf(selectedValue));
-                 showInformation.afficheGrade.setText(txtGrade.getText());
+                 showInformation.afficheGrade.setText(grade);
 
                  StringBuilder selectedOption=new StringBuilder();
                  if (arabic.isSelected()){
@@ -272,18 +290,17 @@ public class Inscription extends JFrame {
                      selectedOption.append("English, ");
                  }
                  showInformation.afficheLanguage.setText(selectedOption.toString());
+                 }
              }
          });
 
         this.add(panelInscription);
     }
 
-    // MSG FOR VERIFICATION
     public void showMsg(String msg){
         JOptionPane.showMessageDialog(this,msg);
     }
 
-    //READ CSV FILE
     private void readCSVFileStudent(String file){
         BufferedReader reader=null;
         String line="";
@@ -319,4 +336,23 @@ public class Inscription extends JFrame {
             e.printStackTrace();
         }
     }
+    private void removeRowCSV(){
+        try(BufferedWriter writer=new BufferedWriter(new FileWriter("src/file/Student.csv"))){
+            writer.write("Gender,Name,Second Name,CNI");
+            writer.newLine();
+            for (int i = 0; i<tableModel.getRowCount();i++){
+                writer.write(
+                        tableModel.getValueAt(i, 0) + "," +
+                                tableModel.getValueAt(i, 1) + "," +
+                                tableModel.getValueAt(i, 2) + "," +
+                                tableModel.getValueAt(i, 3)
+                );
+                writer.newLine();
+
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

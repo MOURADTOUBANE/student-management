@@ -16,7 +16,7 @@ public class ActionsUtilisateur extends JFrame {
         this.setVisible(true);
 
         btnInscription=new JButton("Inscription");
-        btnModules=new JButton("Modules");
+        btnModules=new JButton("Edit Modules");
 
         btnInscription.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnModules.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

@@ -13,10 +13,10 @@ public class AfficheModules extends JFrame {
     JScrollPane tableScroller;
     JButton buttonConfirm;
     public AfficheModules(){
-        CreateListModulesForamteures();
+        CreateTableModulesForamteures();
     }
-    private void CreateListModulesForamteures(){
-        this.setTitle("List Of Modules");
+    private void CreateTableModulesForamteures(){
+        this.setTitle("Table Of Modules And Formateurs");
         this.setSize(700,500);
         ImageIcon imageIcon=new ImageIcon("src/images/book.png");
         Image image=imageIcon.getImage();
@@ -46,7 +46,8 @@ public class AfficheModules extends JFrame {
         buttonConfirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                JOptionPane.showMessageDialog(buttonConfirm,"student registry success","success",JOptionPane.INFORMATION_MESSAGE);
+                setVisible(false);
             }
         });
     }

@@ -90,7 +90,7 @@ public class ShowInformation extends JFrame{
         afficheGrade.setBounds(140,300,100,20);
 
         //BUTTONS
-          buttonConfirm=new JButton("Confirm");
+          buttonConfirm=new JButton("Next");
           buttonConfirm.setBounds(140,330,90,20);
           this.add(buttonConfirm);
           buttonCancel=new JButton("Cancel");
@@ -102,6 +102,7 @@ public class ShowInformation extends JFrame{
               @Override
               public void actionPerformed(ActionEvent e) {
                   new AfficheModules();
+                  setVisible(false);
               }
           });
           buttonCancel.addActionListener(new ActionListener() {

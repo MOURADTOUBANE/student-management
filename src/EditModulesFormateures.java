@@ -3,10 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class EditModulesFormateures extends JFrame {
     DefaultTableModel tableModel;
@@ -16,11 +13,11 @@ public class EditModulesFormateures extends JFrame {
     JTextField txtModule,txtFormateur;
     JButton buttonAdd,buttonClear,buttonDelete,buttonDeleteAll,buttonConfirm;
     public EditModulesFormateures(){
-        EditListModulesFormateures();
+        EditTableModulesFormateures();
 
     }
-    private void EditListModulesFormateures(){
-        this.setTitle("Edit List");
+    private void EditTableModulesFormateures(){
+        this.setTitle("Edit Table");
         this.setSize(1000,500);
         ImageIcon imageIcon=new ImageIcon("src/Images/edit.png");
         Image image=imageIcon.getImage();
@@ -86,10 +83,14 @@ public class EditModulesFormateures extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String module=txtModule.getText();
                 String formateur=txtFormateur.getText();
-                tableModel.addRow(new Object[]{module,formateur});
+                if (module.isEmpty() && formateur.isEmpty()){
+                    showMsg("Please Enter All Information");
+                }else {
+                    tableModel.addRow(new Object[]{module,formateur});
 
-                writeToCSVFileModules(module,formateur);
-                showMsg("Module added successfully!");
+                    writeToCSVFileModules(module,formateur);
+                    showMsg("Module added successfully!");
+                }
             }
         });
         buttonClear.addActionListener(new ActionListener() {
@@ -105,6 +106,8 @@ public class EditModulesFormateures extends JFrame {
                 int[] selectedIndice=tableModules.getSelectedRows();
                 for (int i=selectedIndice.length-1;i>=0;i--){
                     tableModel.removeRow(selectedIndice[i]);
+                    removeRowCSV();
+                    showMsg("Module Removed Successful!");
                 }
             }
         });
@@ -112,9 +115,28 @@ public class EditModulesFormateures extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tableModel.setRowCount(0);
+                removeRowCSV();
+                showMsg("All Modules Removed!");
+            }
+        });
+        buttonConfirm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String module=txtModule.getText();
+                String formateur=txtFormateur.getText();
+                if (module.isEmpty() && formateur.isEmpty()){
+                    showMsg("Please Enter All inforamation");
+                }else {
+                    showMsg("Modules Added Successfully!");
+                    setVisible(false);
+                }
             }
         });
     }
+    public void showMsg(String msg){
+        JOptionPane.showMessageDialog(this,msg);
+    }
+
     private void readCSVFileModules(String file){
         BufferedReader reader=null;
         String line="";
@@ -148,8 +170,20 @@ public class EditModulesFormateures extends JFrame {
             e.printStackTrace();
         }
     }
-    public void showMsg(String msg){
-        JOptionPane.showMessageDialog(this,msg);
-    }
+    private void removeRowCSV(){
+        try(BufferedWriter writer=new BufferedWriter(new FileWriter("src/file/Modules.csv"))){
+            writer.write("MODULE,FORMATEUR");
+            writer.newLine();
+            for (int i = 0; i<tableModel.getRowCount();i++){
+                writer.write(
+                        tableModel.getValueAt(i, 0) + "," +
+                                tableModel.getValueAt(i, 1)
 
+                );
+                writer.newLine();
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+}
 }

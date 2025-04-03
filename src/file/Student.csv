@@ -1,9 +1,9 @@
-Gender,Name,Second Name,CNI
-Male,Ali,Jorli,PK98724
-Male,Kamal,Beneni,MP12668
-Female,Fouzia,Douri,kP126976
-Male,Badr,Touri,BP87532
-Female,Najwa,Botona,BP09732
-Female,Laila,Riwak,BJ78934
-Male,Mourad,Roudi,PK7862
-Female,alaa,tiwtiw,MK97768
+Gender,Name,Second Name,CNI,Nationality,Age,Grade,Language,Adresse
+Female,test,test,mk9083,Albanian,12,lycee,English,casa
+Male,mourad,toubane,lk98765,Select,6,,Arabic English ,boko
+Male,test,test,ko987,Brazilian,6,,English ,casa
+Male,test,test,mk987,American,9,,French ,casa
+Female,test,test,pn89765,Brazilian,19,bac,Arabic French English ,bernoussi
+Male,mourad,toubane,km9876,German,23,master,English ,mosco
+Female,marwa,toubane,fr5678,Moroccan,21,lycee,Arabic French English ,casa
+Male,ali,ali,mk9877,British,13,bac,Arabic French English ,soumi

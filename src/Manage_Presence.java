@@ -1,9 +1,12 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
-import java.util.Arrays;
 
 public class Manage_Presence extends JFrame {
     JPanel panel_1, panel_2;
@@ -13,7 +16,7 @@ public class Manage_Presence extends JFrame {
     JScrollPane tableScroller, tableScroller_2;
     JLabel lblId, lblName, lblSecondName, lblPresence, lblId_2, lblDay, lblHours;
     JTextField txtId, txtName, txtSecondName, txtPresence, txtId_2, txtDay, txtHours;
-    JButton buttonAdd, buttonSearch;
+    JButton buttonAdd, buttonSearch,buttonModify,buttonFinishEdit;
 
     public Manage_Presence() {
         managePresence();
@@ -24,7 +27,6 @@ public class Manage_Presence extends JFrame {
         this.setSize(600, 500);
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.setVisible(true);
-
 
         //Add Panels
         panel_1 = new JPanel(null);
@@ -104,9 +106,19 @@ public class Manage_Presence extends JFrame {
         tableModel.addColumn("Friday");
         tableModel.addColumn("Saturday");
         tableModel.addColumn("Hours Of Absence");
-
         tableScroller.setBounds(250, 50, 1000, 400);
         panel_1.add(tableScroller);
+
+        //Button_Modify
+        buttonModify=new JButton("Modify");
+        buttonModify.setBounds(650,470,100,20);
+        panel_1.add(buttonModify);
+
+        //Buton_Finish_Edit
+        buttonFinishEdit=new JButton("finish edit");
+        buttonFinishEdit.setBounds(800,470,100,20);
+        panel_1.add(buttonFinishEdit);
+
         readCSVFileStudent("src/file/Presence.csv");
         //End Panel_1
 
@@ -172,6 +184,8 @@ public class Manage_Presence extends JFrame {
                     newrow[tableModel.getColumnCount() - 1] = hours;
                     tableModel.addRow(newrow);
                 } else {
+
+                    // check id if already exist
                     for (int row = 0; row < tableModel.getRowCount(); row++) {
                         if (tableModel.getValueAt(row, 0).equals(id)) {
                             for (int col = 3; col < tableModel.getColumnCount(); col++) {
@@ -180,6 +194,8 @@ public class Manage_Presence extends JFrame {
                                 }
                             }
                             tableModel.setValueAt(hours, row, tableModel.getColumnCount() - 1);
+
+                            JOptionPane.showMessageDialog(null,"This id already exist");
                             return;
                         }
                     }
@@ -197,10 +213,121 @@ public class Manage_Presence extends JFrame {
                     newrow[tableModel.getColumnCount() - 1] = hours;
                     tableModel.addRow(newrow);
 
-                    writeToCSVFileStudent(Arrays.toString(newrow));
+                    saveUpdatedDataToCSV();
+
+                    txtId.setText("");
+                    txtName.setText("");
+                    txtSecondName.setText("");
+                    txtPresence.setText("");
+                    txtDay.setText("");
+                    txtHours.setText("");
                 }
 
             }
+        });
+
+        //get data from table to txtfield
+        buttonModify.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = tableStudents.getSelectedRow();
+                if (row != -1) {
+                    Object id=tableModel.getValueAt(row, 0).toString();
+                    txtId.setText(id.toString());
+
+                    String name=tableModel.getValueAt(row, 1).toString();
+                    txtName.setText(name);
+
+                    String secondName=tableModel.getValueAt(row, 2).toString();
+                    txtSecondName.setText(secondName);
+
+                    txtPresence.setText("");
+                    txtDay.setText("");
+                    txtHours.setText("");
+
+                    txtDay.requestFocus();
+
+                }
+            }
+        });
+
+        buttonFinishEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtId.setText("");
+                txtName.setText("");
+                txtSecondName.setText("");
+                txtPresence.setText("");
+                txtDay.setText("");
+                txtHours.setText("");
+                tableStudents.clearSelection();
+            }
+        });
+
+        //update data
+
+        txtHours.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateHours();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateHours();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateHours();
+            }
+
+            private void updateHours() {
+                int row = tableStudents.getSelectedRow();
+                if (row != -1 && !txtHours.getText().isEmpty()) {
+                    tableModel.setValueAt(txtHours.getText(), row, tableModel.getColumnCount() - 1);
+                    saveUpdatedDataToCSV();
+                }
+            }
+        });
+
+        txtPresence.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updatePresence();
+
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updatePresence();
+
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+               updatePresence();
+            }
+            private void updatePresence() {
+                int row = tableStudents.getSelectedRow();
+                String day=txtDay.getText();
+                if (row != -1 && !day.isEmpty() && !txtPresence.getText().isEmpty()) {
+                    for (int i = 3; i < tableModel.getColumnCount(); i++) {
+                        if (tableModel.getColumnName(i).equalsIgnoreCase(day)) {
+                            tableModel.setValueAt(txtPresence.getText(), row, i);
+
+                            saveUpdatedDataToCSV();
+                            break;
+                        }
+
+                    }
+
+                }
+
+
+            }
+
         });
 
         //Find id
@@ -214,13 +341,12 @@ public class Manage_Presence extends JFrame {
                         tableModel_2.removeRow(row);
                     }
                 }
-
-
             }
         });
 
     }
 
+    //read csv file for panel_1
     private void readCSVFileStudent(String file) {
         BufferedReader reader = null;
         String line = "";
@@ -257,6 +383,7 @@ public class Manage_Presence extends JFrame {
         }
     }
 
+    //read csv file for panel_2
     private void readCSVFileStudent2(String CSVFile) {
         BufferedReader reader = null;
         String line = "";
@@ -290,18 +417,36 @@ public class Manage_Presence extends JFrame {
         }
     }
 
-    private void writeToCSVFileStudent(String newrow) {
-
-                String file = "src/file/Presence.csv";
-                try (FileWriter out = new FileWriter(file, true)) {
-                    out.append( newrow).append("\n");
-                    out.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        private void saveUpdatedDataToCSV() {
+            String file = "src/file/Presence.csv";
+            try (FileWriter fw = new FileWriter(file, false)) {
+                // Write header
+                for (int i = 0; i < tableModel.getColumnCount(); i++) {
+                    fw.append(tableModel.getColumnName(i));
+                    if (i < tableModel.getColumnCount() - 1) {
+                        fw.append(",");
+                    }
                 }
+                fw.append("\n");
 
+                // Write data
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                        if (tableModel.getValueAt(i, j) != null) {
+                            fw.append(tableModel.getValueAt(i, j).toString());
+                        }
+                        if (j < tableModel.getColumnCount() - 1) {
+                            fw.append(",");
+                        }
+                    }
+                    fw.append("\n");
+                }
+                fw.flush();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 
-    }
 }
 
 

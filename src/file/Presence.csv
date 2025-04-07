@@ -1,10 +1,12 @@
 ID,Name,Secand Name,Monday,Tuesday,Wednesday,Tursday,Friday,Saturday,Hours of Absence
 1,test,test,abs,pre,,abs,,,2
-[2, mourad, toubane, null, null, null, abs, null, null, 2]
-[4, tree, tree, abs, null, null, null, null, null, 4]
-[7, iuhh, iuh, null, null, null, null, pre, null, 6]
-[3, test, nnn, abs, null, null, null, null, null, 2]
-[4, test, test, pre, null, null, null, null, null, 7]
-[5,test,test2,abs,null,null,null,null,null,3]
-[6, marwa, toubane, null, null, null, null, abs, null, 3]
-[9, Ahmad, alaoui, null, null, abs, null, null, null, 4]
+2, mourad, toubane,,,, abs,,, 2
+4, tree, tree, abs,abs,,,,,5
+7, iuhh, iuh,,,,, pre,, 6
+3, test, nnn, abs,,,,,, 2
+4, test, test, pre,,,pre,,, 7
+5,test,test2,abs,,,,,,2
+6, marwa, toubane,sba,pre,abs,pre, abs,,12
+9, Ahmad, alaoui,a,, abs,,,,b
+10, alaa, toubane,sba,abs,pre, abs,pre,,9
+11,rim,rimi,pre,abs,,abs,,,3

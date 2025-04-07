@@ -3,13 +3,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ActionsUtilisateur extends JFrame {
+public class ActionsUtilisateur extends JFrame{
     JButton btnInscription,btnModules,btnPresence;
     public ActionsUtilisateur(){
         createAndShowGUI();
     }
     private void createAndShowGUI(){
-        this.setTitle("Actions");
+      this.setTitle("Actions");
         this.setSize(300,200);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new FlowLayout());
@@ -45,6 +45,5 @@ public class ActionsUtilisateur extends JFrame {
                 new Manage_Presence();
             }
         });
-
     }
 }
